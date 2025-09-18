@@ -6,7 +6,7 @@ Control automático para un invernadero.
 ### Monitoreo de temperatura y humedad
 - Utilizar el sensor DHT22 para medir la temperatura y humedad dentro del invernadero.
 - Los valores deberán visualizarse en el OLED.
-Control de ventilación (temperatura)
+## Control de ventilación (temperatura)
 - El valor de referencia de temperatura se establecerá mediante el potenciómetro.
 - Si la temperatura medida supera el valor de referencia → encender un LED indicando que
 el sistema de ventilación se activó.
