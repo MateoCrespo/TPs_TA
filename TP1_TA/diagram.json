@@ -82,5 +82,5 @@
     [ "esp32:D25", "r2:1", "magenta", [ "h0" ] ],
     [ "r2:2", "ledVent:A", "magenta", [ "v0" ] ]
   ],
-  "dependencies": {}
+  "dependencies":{}
 }
