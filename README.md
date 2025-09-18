@@ -1,4 +1,4 @@
-# TPs_TA
+# TPs_TA - Grupo 5
 ## Enunciado
 Mediante la plataforma Wokwi, diseñar un circuito con una ESP32 que simule un sistema de
 Control automático para un invernadero.
