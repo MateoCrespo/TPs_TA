@@ -56,6 +56,10 @@ void loop() {
   char buffer[64]; 
   float temp = sensor.getTemp();
   float hum = sensor.getHum();
+  float tempReferencia = 20.0;
+  float humReferencia = 50.0;
+  boolean estadoVentilacion = false;
+  boolean estadoRiego = false; 
   delay(1000);
 
 // Muestra los valores en el monitor serial
@@ -68,9 +72,13 @@ void loop() {
   Serial.print(" %");
   // Pantalla -  
   
+  pantalla.mostrarPantalla1(temp, tempReferencia, estadoVentilacion);
+  delay(4000);
+  pantalla.mostrarPantalla2(hum, humReferencia, estadoRiego);
+
   // pantalla.mostrarDatosTempHum(temp, hum);
-  sprintf(buffer, "Temp: %.1f C\nHum: %.1f %%", temp, hum);
-  pantalla.showDisplay(buffer);
+  // sprintf(buffer, "Temp: %.1f C\nHum: %.1f %%", temp, hum);
+  // pantalla.showDisplay(buffer);
  
 
   // Riego - riego.actualizar(hum);
