@@ -49,7 +49,9 @@ Buzzer buzzer(BUZZER_PIN);
 
 //VARIABLES GLOBALES
 float humedadActual = 0;               // Humedad actual medida por el sensor
-int pantallaActual = 2; 
+int pantallaActual = 2;
+bool estadoVentilacion = false;
+bool estadoRiego = false;
 
 void setup() {
   Serial.begin(9600);
@@ -94,19 +96,16 @@ void loop() {
      pantalla.mostrarPantalla1(temp, tempReferencia, estadoVentilacion);
   }
   else{
-      pantalla.mostrarPantalla2(hum, humReferencia, estadoRiego);
+      pantalla.mostrarPantalla2(hum, umbralRiego, estadoRiego);
   }
-  
-
-  //Para probar si tomaba el potenciometro cambie el parametro de la temperatura
-  sprintf(buffer, "Temp: %.1f C\nHum: %.1f %%", tempReferencia, hum);
-  pantalla.showDisplay(buffer);
 
  
   if (temp > tempReferencia) {
     ledVentilacion.encender();
+    estadoVentilacion = true;
   } else {
     ledVentilacion.apagar();
+    estadoVentilacion = false;
   }
   if (temp > 50 or temp < -10){
     buzzer.encender();
@@ -116,8 +115,10 @@ void loop() {
   // Riego - riego.actualizar(hum);
   if (humedadActual < umbralRiego) {
     ledRiego.parpadear(50);
+    estadoRiego = true;
   } else {
     ledRiego.apagar();
+    estadoRiego = false;
   }
   
   delay(500);
