@@ -25,24 +25,6 @@ void PantallaOLED::showDisplay(const char* text) {
   display.display();
 }
 
-// Mostrar temperatura y humedad
-void PantallaOLED::mostrarDatosTempHum(float temp, float hum) {
-  display.clearDisplay();
-  display.setTextSize(1);
-  display.setTextColor(SH110X_WHITE);
-  
-  display.setCursor(0, 0);
-  display.print("Temp: ");
-  display.print(temp);
-  display.println(" C");
-
-  display.setCursor(0, 10);
-  display.print("Hum: ");
-  display.print(hum);
-  display.println(" %");
-
-  display.display();
-}
 
 void PantallaOLED::mostrarPantalla1(float temp, float tempReferencia, boolean estadoVentilacion) {
   display.clearDisplay();
