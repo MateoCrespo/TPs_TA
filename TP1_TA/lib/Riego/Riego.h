@@ -1,23 +1,17 @@
-#ifndef RIEGO_H   // <-- esto faltaba
+#ifndef RIEGO_H
 #define RIEGO_H
 
 #include <Arduino.h>
+#include "Led.h"
 
-// Definición de la clase Riego
 class Riego {
   public:
-    Riego(int pinLed);
-    void init(); // Inicializa el pin del LED
-    void actualizar(float humedadActual);// Actualiza el estado del riego según la humedad actual
-    float getHumedadUmbral();// Devuelve el umbral de humedad
-    bool getRiegoActivo();// Devuelve si el riego está activo o no
+    Riego();   
+    void init();               // Inicializa el sistema de riego
+    float getHumedadUmbral();  // Devuelve el umbral generado
 
-  private:
-    int ledPin;
-    const unsigned long intervalo = 500; // Intervalo de tiempo para el riego (500 ms)
-    unsigned long tiempoAnterior; // Variable para almacenar el tiempo anterior
-    bool riegoEncendido;// Estado actual del riego
-    float umbral;// Umbral de humedad para activar el riego
+  private: 
+    float umbral;              // Umbral aleatorio generado
 };
 
 #endif
