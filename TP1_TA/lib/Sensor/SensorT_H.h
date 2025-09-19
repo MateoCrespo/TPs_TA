@@ -6,7 +6,7 @@
 
 class SensorT_H {
   public:
-    SensorT_H(int pinDHT);
+    SensorT_H(int pinDHT, DHTesp::DHT_MODEL_t sensorType);
 
    void begin();         // Inicializar el sensor
     void updateValues();  // Actualizar valores de temperatura y humedad
@@ -16,6 +16,7 @@ class SensorT_H {
 
   private:
     int _pinDHT;
+    DHTesp::DHT_MODEL_t _sensorType;
     float _temp;
     float _hum;
     DHTesp* _dht; 
