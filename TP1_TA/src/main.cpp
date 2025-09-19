@@ -7,8 +7,8 @@
 
 //DEFINICIÓN DE PINES
 // --- Sensor Temperatura DHT22 ---
-#define PIN_DHT 15      // Pin de datos 
-#define DHT_TYPE DHTesp::DHT22    // Tipo de sensor DHT 
+#define PIN_DHT 14      // Pin de datos 
+#define DHT_TYPE DHT22    // Tipo de sensor DHT 
 
 // --- Pantalla OLED ---
 #define OLED_WIDTH 128    // Ancho de la pantalla en pixeles
@@ -46,14 +46,17 @@ void setup() {
   pantalla.init();
   riego.init();
   Serial.println("Sistema iniciado.");
+  delay(2000);
 }
 
 
 // Bucle principal
 void loop() {
-  sensor.updateValues(); // Actualizar valores del sensor
+ // sensor.updateValues(); // Actualizar valores del sensor
+  char buffer[64]; 
   float temp = sensor.getTemp();
   float hum = sensor.getHum();
+  delay(1000);
 
 // Muestra los valores en el monitor serial
   Serial.print("Temperatura: ");
@@ -63,7 +66,12 @@ void loop() {
   Serial.print("Humedad: ");
   Serial.print(hum);
   Serial.print(" %");
-  // Pantalla -  pantalla.mostrarDatosTempHum(temp, hum);
+  // Pantalla -  
+  
+  // pantalla.mostrarDatosTempHum(temp, hum);
+  sprintf(buffer, "Temp: %.1f C\nHum: %.1f %%", temp, hum);
+  pantalla.showDisplay(buffer);
+ 
 
   // Riego - riego.actualizar(hum);
 

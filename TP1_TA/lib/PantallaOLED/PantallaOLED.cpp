@@ -16,7 +16,13 @@ void PantallaOLED::init() {
   display.setCursor(0, 0);
   display.println("Pantalla lista");
   display.display();
-  delay(1000);
+}
+
+void PantallaOLED::showDisplay(const char* text) {
+  display.clearDisplay();
+  display.setCursor(0, 0);
+  display.print(text);
+  display.display();
 }
 
 // Mostrar temperatura y humedad
@@ -24,7 +30,9 @@ void PantallaOLED::mostrarDatosTempHum(float temp, float hum) {
   display.clearDisplay();
   display.setTextSize(1);
   display.setTextColor(SH110X_WHITE);
-
+  if (temp == 0) {
+    temp = 2;
+  };
   display.setCursor(0, 0);
   display.print("Temp: ");
   display.print(temp);

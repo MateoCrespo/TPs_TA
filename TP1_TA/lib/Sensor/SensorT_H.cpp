@@ -1,35 +1,25 @@
 #include "SensorT_H.h"
-#include "DHTesp.h"
+#include <DHT.h>
 
-SensorT_H::SensorT_H(int pinDHT, DHTesp::DHT_MODEL_t sensorType) {
+SensorT_H::SensorT_H(int pinDHT, int sensorType) 
+: _dht(pinDHT, sensorType) {
   _pinDHT = pinDHT;
   _sensorType = sensorType; 
-  _dht = new DHTesp();
-  _temp = 0.0f;
+  _temp = 5.0f;
   _hum = 0.0f;
 }
 
 void SensorT_H::begin() {
   // Configura el pin del sensor y el tipo de sensor
-  _dht->setup(_pinDHT, _sensorType);
-}
-
-void SensorT_H::updateValues() {
-  TempAndHumidity data = _dht->getTempAndHumidity();
-
-  // Verifica si las lecturas son válidas antes de actualizarlas
-  if (!isnan(data.temperature)) {
-    _temp = data.temperature;
-  }
-  if (!isnan(data.humidity)) {
-    _hum = data.humidity;
-  }
+  _dht.begin();
 }
 
 float SensorT_H::getTemp() {
-  return _temp;
+  float temp = _dht.readTemperature();
+  return temp;
 }
 
 float SensorT_H::getHum() {
-  return _hum;
+  float hum = _dht.readHumidity();
+  return hum;
 }

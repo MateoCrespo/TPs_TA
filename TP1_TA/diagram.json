@@ -6,13 +6,6 @@
     { "type": "wokwi-breadboard", "id": "bb1", "top": 220, "left": -120, "attrs": {} },
     { "type": "board-esp32-devkit-v1", "id": "esp32", "top": -12.32, "left": 4.8, "attrs": {} },
     { "type": "wokwi-dht22", "id": "dht1", "top": -172.5, "left": -72.6, "attrs": {} },
-    {
-      "type": "wokwi-ssd1306",
-      "id": "oled1",
-      "top": -22.1,
-      "left": 357.1,
-      "attrs": { "i2cAddress": "0x3C" }
-    },
     { "type": "wokwi-potentiometer", "id": "pot1", "top": -60, "left": -210, "attrs": {} },
     {
       "type": "wokwi-led",
@@ -43,6 +36,13 @@
       "top": 61.55,
       "left": 115.2,
       "attrs": { "value": "1000" }
+    },
+    {
+      "type": "board-ssd1306",
+      "id": "oled2",
+      "top": 51.14,
+      "left": 374.63,
+      "attrs": { "i2cAddress": "0x3c" }
     }
   ],
   "connections": [
@@ -52,24 +52,16 @@
     [ "pot1:GND", "bb1:tn.3", "black", [ "v0" ] ],
     [ "dht1:VCC", "bb1:tp.12", "red", [ "v0" ] ],
     [ "dht1:GND", "bb1:tn.15", "black", [ "v0" ] ],
-    [ "oled1:VCC", "esp32:3V3", "red", [ "h0" ] ],
-    [ "oled1:GND", "bb1:tn.40", "black", [ "v-28.3", "h-93" ] ],
     [ "ledVent:C", "esp32:GND.4", "black", [ "h0" ] ],
     [ "ledRiego:C", "esp32:GND.5", "black", [ "h0" ] ],
     [ "btn1:2.l", "esp32:GND.6", "black", [ "h0" ] ],
     [ "buzz1:2", "esp32:GND.7", "black", [ "h0" ] ],
     [ "dht1:SDA", "esp32:15", "green", [ "h0" ] ],
-    [ "oled1:SCL", "esp32:22", "green", [ "h0" ] ],
-    [ "oled1:SDA", "esp32:21", "yellow", [ "h0" ] ],
     [ "pot1:SIG", "esp32:34", "blue", [ "h0" ] ],
     [ "ledVent:A", "esp32:25", "orange", [ "h0" ] ],
     [ "ledRiego:A", "esp32:26", "purple", [ "h0" ] ],
     [ "btn1:1.l", "esp32:27", "green", [ "h0" ] ],
     [ "buzz1:1", "esp32:32", "red", [ "h0" ] ],
-    [ "dht1:SDA", "esp32:D15", "orange", [ "v0" ] ],
-    [ "oled1:VIN", "bb1:tp.35", "red", [ "h77.4", "v241.9" ] ],
-    [ "oled1:DATA", "esp32:D21", "gold", [ "h-67.2", "v57.6" ] ],
-    [ "oled1:CLK", "esp32:D22", "orange", [ "h-172.2", "v28.8" ] ],
     [ "pot1:SIG", "esp32:D34", "gold", [ "v0" ] ],
     [ "ledVent:C", "bb1:tn.19", "black", [ "v0" ] ],
     [ "ledRiego:C", "bb1:tn.20", "black", [ "v0" ] ],
@@ -80,7 +72,12 @@
     [ "esp32:D26", "r1:1", "magenta", [ "h0" ] ],
     [ "r1:2", "ledRiego:A", "magenta", [ "v0" ] ],
     [ "esp32:D25", "r2:1", "magenta", [ "h0" ] ],
-    [ "r2:2", "ledVent:A", "magenta", [ "v0" ] ]
+    [ "r2:2", "ledVent:A", "magenta", [ "v0" ] ],
+    [ "oled2:VCC", "bb1:tp.50", "red", [ "v-9.6", "h96.15", "v9.6" ] ],
+    [ "oled2:GND", "bb1:tn.45", "black", [ "v-19.2", "h96", "v105.6", "h-96", "v9.6" ] ],
+    [ "oled2:SCL", "esp32:D22", "green", [ "v0" ] ],
+    [ "oled2:SDA", "esp32:D21", "gold", [ "v0" ] ],
+    [ "dht1:SDA", "esp32:D14", "gold", [ "v0" ] ]
   ],
-  "dependencies":{}
+  "dependencies": {}
 }

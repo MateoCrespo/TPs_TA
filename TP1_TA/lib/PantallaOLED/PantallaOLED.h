@@ -12,6 +12,7 @@ class PantallaOLED {
 
     void init();                                // Inicializar pantalla
     void mostrarDatosTempHum(float temp, float hum); // Mostrar datos
+    void showDisplay(const char* text);          // Mostrar texto
 
   private:
     int width, height, resetPin;                // Parámetros de pantalla
