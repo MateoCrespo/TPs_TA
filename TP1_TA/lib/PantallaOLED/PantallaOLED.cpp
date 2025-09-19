@@ -30,9 +30,7 @@ void PantallaOLED::mostrarDatosTempHum(float temp, float hum) {
   display.clearDisplay();
   display.setTextSize(1);
   display.setTextColor(SH110X_WHITE);
-  if (temp == 0) {
-    temp = 2;
-  };
+  
   display.setCursor(0, 0);
   display.print("Temp: ");
   display.print(temp);
@@ -42,6 +40,54 @@ void PantallaOLED::mostrarDatosTempHum(float temp, float hum) {
   display.print("Hum: ");
   display.print(hum);
   display.println(" %");
+
+  display.display();
+}
+
+void PantallaOLED::mostrarPantalla1(float temp, float tempReferencia, boolean estadoVentilacion) {
+  display.clearDisplay();
+  display.setTextSize(1);
+  display.setTextColor(SH110X_WHITE);
+  display.setCursor(0, 0);
+
+  display.print("Temperatura:");
+  display.print(temp);
+  display.println(" C");
+
+  display.setCursor(0, 20);
+  display.print("Temp Referencia: ");
+  display.setCursor(0, 30);
+  display.print(tempReferencia);
+  display.println(" C");
+
+  display.setCursor(0, 50);
+  display.print("Estado Ventilacion: ");
+  display.setCursor(0, 60);
+  display.print(estadoVentilacion ? "Encendido" : "Apagado");
+
+  display.display();
+}
+
+void PantallaOLED::mostrarPantalla2(float hum, float humReferencia, boolean estadoRiego) {
+  display.clearDisplay();
+  display.setTextSize(1);
+  display.setTextColor(SH110X_WHITE);
+  
+  display.setCursor(0, 0);
+  display.print("Humedad: ");
+  display.print(hum);
+  display.println("%");
+
+  display.setCursor(0, 20);
+  display.print("Humedad Referencia: ");
+  display.setCursor(0, 30);
+  display.print(humReferencia);
+  display.println("%");
+
+  display.setCursor(0, 50);
+  display.print("Estado Riego: ");
+  display.setCursor(0, 60);
+  display.print(estadoRiego ? "Encendido" : "Apagado");
 
   display.display();
 }

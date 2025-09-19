@@ -80,10 +80,16 @@ void loop() {
   Serial.println(tempReferencia);
   // Pantalla -  
   
+  pantalla.mostrarPantalla1(temp, tempReferencia, estadoVentilacion);
+  delay(4000);
+  pantalla.mostrarPantalla2(hum, humReferencia, estadoRiego);
+
   // pantalla.mostrarDatosTempHum(temp, hum);
+
   //Para probar si tomaba el potenciometro cambie el parametro de la temperatura
   sprintf(buffer, "Temp: %.1f C\nHum: %.1f %%", tempReferencia, hum);
   pantalla.showDisplay(buffer);
+
  
   if (temp > tempReferencia) {
     ledVentilacion.encender();
