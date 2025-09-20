@@ -4,6 +4,7 @@
 #include "SensorT_H.h"
 #include "PantallaOLED.h"
 #include "Riego.h"
+#include "Boton.h"
 #include "Potenciometro.h"
 #include "Led.h"
 #include "Buzzer.h"
@@ -38,13 +39,18 @@
 // DECLARACIÓN DE OBJETOS
 PantallaOLED pantalla(OLED_WIDTH, OLED_HEIGHT, OLED_RESET); // Objeto pantalla OLED
 SensorT_H sensor(PIN_DHT, DHT_TYPE);  // Objeto sensor DHT22
+
+Boton boton(BTN_PIN);          
 Potenciometro potenciometro(POT_PIN);
 Led ledVentilacion(LED_VENT);
 Led ledRiego(LED_RIEGO);
 Riego riego;
 Buzzer buzzer(BUZZER_PIN);
+
 //VARIABLES GLOBALES
 float humedadActual = 0;               // Humedad actual medida por el sensor
+int pantallaActual = 2; 
+
 void setup() {
   Serial.begin(9600);
   sensor.begin();
@@ -60,9 +66,13 @@ void setup() {
 // Bucle principal
 void loop() {
  // sensor.updateValues(); // Actualizar valores del sensor
-  char buffer[64]; 
   float temp = sensor.getTemp();
   float hum = sensor.getHum();
+
+  if (boton.estaPulsado()) {
+    pantallaActual = pantallaActual == 1 ? 2 : 1;
+  }
+  
   float tempReferencia = potenciometro.leerTemperaturaReferencia();
   float umbralRiego = riego.getHumedadUmbral();
   delay(1000);
@@ -78,12 +88,20 @@ void loop() {
 
   Serial.print("Temp ref: ");
   Serial.println(tempReferencia);
-  // Pantalla -  
+
+  // Pantalla - 
+  if (pantallaActual == 1){
+     pantalla.mostrarPantalla1(temp, tempReferencia, estadoVentilacion);
+  }
+  else{
+      pantalla.mostrarPantalla2(hum, humReferencia, estadoRiego);
+  }
   
-  // pantalla.mostrarDatosTempHum(temp, hum);
+
   //Para probar si tomaba el potenciometro cambie el parametro de la temperatura
   sprintf(buffer, "Temp: %.1f C\nHum: %.1f %%", tempReferencia, hum);
   pantalla.showDisplay(buffer);
+
  
   if (temp > tempReferencia) {
     ledVentilacion.encender();
@@ -102,8 +120,8 @@ void loop() {
     ledRiego.apagar();
   }
   
-
   delay(500);
+
 }
 
 
