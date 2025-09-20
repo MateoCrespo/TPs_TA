@@ -36,10 +36,9 @@
 
 
 
-// DECLARACIÓN DE OBJETOS
+// DECLARACIÓN DE OBJETOS 
 PantallaOLED pantalla(OLED_WIDTH, OLED_HEIGHT, OLED_RESET); // Objeto pantalla OLED
 SensorT_H sensor(PIN_DHT, DHT_TYPE);  // Objeto sensor DHT22
-
 Boton boton(BTN_PIN);          
 Potenciometro potenciometro(POT_PIN);
 Led ledVentilacion(LED_VENT);
@@ -48,35 +47,44 @@ Riego riego;
 Buzzer buzzer(BUZZER_PIN);
 
 //VARIABLES GLOBALES
-float humedadActual = 0;               // Humedad actual medida por el sensor
 int pantallaActual = 2; 
+bool ventilacionEstado = false; // false = apagada, true = encendida
+bool riegoEstado = false;    
+int umbralInicial = 0;   // false = apagado, true = encendido
 
 void setup() {
   Serial.begin(9600);
+  delay(100);
   sensor.begin();
+  boton.begin();
   pantalla.init();
   potenciometro.init();
   ledVentilacion.init();
   ledRiego.init();
   Serial.println("Sistema iniciado.");
-  delay(2000);
+  int umbralInicial = riego.getHumedadUmbral(); // asumo int
+  Serial.print("Umbral de riego generado: ");
+  Serial.print(umbralInicial);
+  Serial.println(" %");
 }
 
 
 // Bucle principal
 void loop() {
  // sensor.updateValues(); // Actualizar valores del sensor
+  char buffer[64];
   float temp = sensor.getTemp();
   float hum = sensor.getHum();
+  float humReferencia = riego.getHumedadUmbral();
+  float tempReferencia = potenciometro.leerTemperaturaReferencia();
+  float umbralRiego = umbralInicial; // umbral fijo para riego
+  bool estadoVentilacion = false; // Estado del ventilador
+  bool estadoRiego = false; // Estado del sistema de riego
 
-  if (boton.estaPulsado()) {
+  if (boton.fuePresionado()) {
     pantallaActual = pantallaActual == 1 ? 2 : 1;
   }
   
-  float tempReferencia = potenciometro.leerTemperaturaReferencia();
-  float umbralRiego = riego.getHumedadUmbral();
-  delay(1000);
-
 // Muestra los valores en el monitor serial
   Serial.print("Temperatura: ");
   Serial.print(temp);
@@ -89,20 +97,17 @@ void loop() {
   Serial.print("Temp ref: ");
   Serial.println(tempReferencia);
 
+
+  
   // Pantalla - 
   if (pantallaActual == 1){
-     pantalla.mostrarPantalla1(temp, tempReferencia, estadoVentilacion);
+    pantalla.mostrarPantalla1(temp, tempReferencia, estadoVentilacion);
   }
   else{
       pantalla.mostrarPantalla2(hum, humReferencia, estadoRiego);
   }
-  
+    
 
-  //Para probar si tomaba el potenciometro cambie el parametro de la temperatura
-  sprintf(buffer, "Temp: %.1f C\nHum: %.1f %%", tempReferencia, hum);
-  pantalla.showDisplay(buffer);
-
- 
   if (temp > tempReferencia) {
     ledVentilacion.encender();
   } else {
@@ -114,13 +119,13 @@ void loop() {
     buzzer.apagar();
   }
   // Riego - riego.actualizar(hum);
-  if (humedadActual < umbralRiego) {
+  if (hum < umbralRiego) {
     ledRiego.parpadear(50);
   } else {
     ledRiego.apagar();
   }
   
-  delay(500);
+  delay(100);
 
 }
 

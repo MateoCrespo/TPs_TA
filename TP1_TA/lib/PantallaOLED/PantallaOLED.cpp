@@ -61,7 +61,7 @@ void PantallaOLED::mostrarPantalla2(float hum, float humReferencia, boolean esta
   display.println("%");
 
   display.setCursor(0, 20);
-  display.print("Humedad Referencia: ");
+  display.print("Humedad Refe: ");
   display.setCursor(0, 30);
   display.print(humReferencia);
   display.println("%");
