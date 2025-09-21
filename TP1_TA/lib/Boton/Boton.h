@@ -7,9 +7,9 @@ class Boton {
   public:
     Boton(int pinBTN);
 
-    void begin();          // Inicializa el pin
-    bool estaPulsado();      // Devuelve true si el botón está presionado
- 
+    void begin();               // Inicializa el pin
+    bool fuePresionado();       // Devuelve true SOLO cuando se detecta un flanco (pulsación)
+
   private:
     int _pinBTN;
     bool _ultimoEstado;
