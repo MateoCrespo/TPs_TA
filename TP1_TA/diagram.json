@@ -1,10 +1,10 @@
 {
   "version": 1,
-  "author": "Flor",
+  "author": "Mateo Crespo",
   "editor": "wokwi",
   "parts": [
-    { "type": "wokwi-breadboard", "id": "bb1", "top": 220, "left": -120, "attrs": {} },
-    { "type": "board-esp32-devkit-v1", "id": "esp32", "top": -12.32, "left": 4.8, "attrs": {} },
+    { "type": "wokwi-breadboard", "id": "bb1", "top": 217.8, "left": -122, "attrs": {} },
+    { "type": "board-esp32-devkit-c-v4", "id": "esp", "top": -12.32, "left": 4.8, "attrs": {} },
     { "type": "wokwi-dht22", "id": "dht1", "top": -172.5, "left": -72.6, "attrs": {} },
     { "type": "wokwi-potentiometer", "id": "pot1", "top": -60, "left": -210, "attrs": {} },
     {
@@ -33,7 +33,7 @@
     {
       "type": "wokwi-resistor",
       "id": "r2",
-      "top": 61.55,
+      "top": 71.15,
       "left": 115.2,
       "attrs": { "value": "1000" }
     },
@@ -46,6 +46,8 @@
     }
   ],
   "connections": [
+    [ "esp:TX", "$serialMonitor:RX", "", [] ],
+    [ "esp:RX", "$serialMonitor:TX", "", [] ],
     [ "esp32:3V3", "bb1:tp.1", "red", [ "v0" ] ],
     [ "esp32:GND.2", "bb1:tn.1", "black", [ "h0" ] ],
     [ "pot1:VCC", "bb1:tp.3", "red", [ "v0" ] ],
@@ -77,7 +79,17 @@
     [ "oled2:GND", "bb1:tn.45", "black", [ "v-19.2", "h96", "v105.6", "h-96", "v9.6" ] ],
     [ "oled2:SCL", "esp32:D22", "green", [ "v0" ] ],
     [ "oled2:SDA", "esp32:D21", "gold", [ "v0" ] ],
-    [ "dht1:SDA", "esp32:D14", "gold", [ "v0" ] ]
+    [ "dht1:SDA", "esp32:D14", "gold", [ "v0" ] ],
+    [ "dht1:SDA", "esp:14", "yellow", [ "v0" ] ],
+    [ "pot1:SIG", "esp:VN", "yellow", [ "v0" ] ],
+    [ "btn1:1.r", "esp:27", "yellow", [ "v0" ] ],
+    [ "bb1:tn.1", "esp:GND.1", "black", [ "v0" ] ],
+    [ "esp:26", "r1:1", "magenta", [ "h0" ] ],
+    [ "r2:1", "esp:25", "magenta", [ "v0" ] ],
+    [ "esp:23", "oled2:SCL", "green", [ "h0" ] ],
+    [ "oled2:SDA", "esp:21", "yellow", [ "v9.6", "h-335.93" ] ],
+    [ "esp:5V", "bb1:tp.1", "red", [ "h0" ] ],
+    [ "esp:32", "buzz1:2", "orange", [ "h0" ] ]
   ],
   "dependencies": {}
 }

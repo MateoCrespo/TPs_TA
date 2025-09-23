@@ -53,7 +53,7 @@ bool riegoEstado = false;
 int umbralInicial = 0;   // false = apagado, true = encendido
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
   delay(100);
   sensor.begin();
   boton.begin();
