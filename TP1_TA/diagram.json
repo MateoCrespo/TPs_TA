@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "author": "Mateo Crespo",
+  "author": "Grupo 5",
   "editor": "wokwi",
   "parts": [
     { "type": "wokwi-breadboard", "id": "bb1", "top": 217.8, "left": -122, "attrs": {} },
@@ -86,10 +86,10 @@
     [ "bb1:tn.1", "esp:GND.1", "black", [ "v0" ] ],
     [ "esp:26", "r1:1", "magenta", [ "h0" ] ],
     [ "r2:1", "esp:25", "magenta", [ "v0" ] ],
-    [ "esp:23", "oled2:SCL", "green", [ "h0" ] ],
     [ "oled2:SDA", "esp:21", "yellow", [ "v9.6", "h-335.93" ] ],
     [ "esp:5V", "bb1:tp.1", "red", [ "h0" ] ],
-    [ "esp:32", "buzz1:2", "orange", [ "h0" ] ]
+    [ "esp:32", "buzz1:2", "orange", [ "h0" ] ],
+    [ "esp:22", "oled2:SCL", "green", [ "h0" ] ]
   ],
   "dependencies": {}
 }
