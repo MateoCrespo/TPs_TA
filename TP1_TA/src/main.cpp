@@ -48,9 +48,9 @@ Buzzer buzzer(BUZZER_PIN);
 
 //VARIABLES GLOBALES
 int pantallaActual = 2; 
-bool estadoVentilacion = false; // false = apagada, true = encendida
+bool estadoVentilacion = false; 
 bool estadoRiego = false;    
-int umbralInicial = 0;   // false = apagado, true = encendido
+int umbralInicial = 0;  
 
 void setup() {
   Serial.begin(115200);
@@ -69,9 +69,8 @@ void setup() {
   Serial.println(" %");
 }
 
-// Bucle principal
+
 void loop() {
- // sensor.updateValues(); // Actualizar valores del sensor
   char buffer[64];
   float temp = sensor.getTemp();
   float hum = sensor.getHum();
@@ -115,9 +114,9 @@ void loop() {
   }
 
   // --- Alarma (Buzzer) ---
-  if (temp > 50 or temp < -10){
+  if (temp > 60 or temp < -10){
     buzzer.encender();
-    Serial.println("Evento: Buzzer ACTIVADO (temperatura fuera de rango)");
+    Serial.println("Evento: Buzzer ACTIVADO (temperatura extrema)");
   } else{
     buzzer.apagar();
   }

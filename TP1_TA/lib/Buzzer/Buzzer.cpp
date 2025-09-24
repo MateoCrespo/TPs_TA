@@ -6,13 +6,14 @@ Buzzer::Buzzer(int pinBuzzer) {
 
 void Buzzer::init() {
   pinMode(pin, OUTPUT);
-  digitalWrite(pin, LOW);
+  ledcSetup(0, 1000, 8);       // canal, frecuencia inicial, resolución
+  ledcAttachPin(pin, 0);     
 }
 
 void Buzzer::encender() {
-  tone(pin, 1000);
+  ledcWriteTone(0, 1000); // canal y frecuencia en Hz
 }
 
 void Buzzer::apagar() {
-  noTone(pin);
+  ledcWriteTone(0, 0);          // corta el tono
 }
