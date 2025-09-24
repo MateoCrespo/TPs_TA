@@ -42,9 +42,9 @@ void PantallaOLED::mostrarPantalla1(float temp, float tempReferencia, boolean es
   display.print(tempReferencia);
   display.println(" C");
 
-  display.setCursor(0, 50);
+  display.setCursor(0, 40);
   display.print("Estado Ventilacion: ");
-  display.setCursor(0, 60);
+  display.setCursor(0, 50);
   display.print(estadoVentilacion ? "Encendido" : "Apagado");
 
   display.display();
@@ -66,9 +66,9 @@ void PantallaOLED::mostrarPantalla2(float hum, float humReferencia, boolean esta
   display.print(humReferencia);
   display.println("%");
 
-  display.setCursor(0, 50);
+  display.setCursor(0, 40);
   display.print("Estado Riego: ");
-  display.setCursor(0, 60);
+  display.setCursor(0, 50);
   display.print(estadoRiego ? "Encendido" : "Apagado");
 
   display.display();

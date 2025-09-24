@@ -18,6 +18,6 @@ void Potenciometro::init() {
 
 float Potenciometro::leerTemperaturaReferencia() {
   int lectura = analogRead(pin); // valor de 0 a 4095 en ESP32
-  float referencia = map(lectura, 0, 4095, minTemp * 10, maxTemp * 10); 
+  float referencia = map(lectura, 0, 4095, minTemp * 10, maxTemp * 10); // mapeo a rango de temperatura *10
   return referencia / 10.0; // lo devuelvo como float
 }

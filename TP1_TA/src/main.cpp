@@ -32,7 +32,7 @@
 #define BTN_PIN 27      // Botón 
 
 // --- Buzzer ---
-#define BUZZER_PIN 32
+#define BUZZER_PIN 27
 
 
 
@@ -48,8 +48,8 @@ Buzzer buzzer(BUZZER_PIN);
 
 //VARIABLES GLOBALES
 int pantallaActual = 2; 
-bool ventilacionEstado = false; // false = apagada, true = encendida
-bool riegoEstado = false;    
+bool estadoVentilacion = false; // false = apagada, true = encendida
+bool estadoRiego = false;    
 int umbralInicial = 0;   // false = apagado, true = encendido
 
 void setup() {
@@ -62,12 +62,11 @@ void setup() {
   ledVentilacion.init();
   ledRiego.init();
   Serial.println("Sistema iniciado.");
-  int umbralInicial = riego.getHumedadUmbral(); // asumo int
+  umbralInicial = riego.getHumedadUmbral(); // 
   Serial.print("Umbral de riego generado: ");
   Serial.print(umbralInicial);
   Serial.println(" %");
 }
-
 
 // Bucle principal
 void loop() {
@@ -75,61 +74,69 @@ void loop() {
   char buffer[64];
   float temp = sensor.getTemp();
   float hum = sensor.getHum();
-  float humReferencia = riego.getHumedadUmbral();
-  float tempReferencia = potenciometro.leerTemperaturaReferencia();
-  float umbralRiego = umbralInicial; // umbral fijo para riego
-  bool estadoVentilacion = false; // Estado del ventilador
-  bool estadoRiego = false; // Estado del sistema de riego
+  float tempReferencia = potenciometro.leerTemperaturaReferencia(); 
 
   if (boton.fuePresionado()) {
     pantallaActual = pantallaActual == 1 ? 2 : 1;
+    Serial.print("Evento: Cambio de pantalla -> ");
+    Serial.println(pantallaActual);
   }
   
-// Muestra los valores en el monitor serial
+  // Muestra los valores en el monitor serial
   Serial.print("Temperatura: ");
   Serial.print(temp);
-  Serial.print(" °C");
-
-  Serial.print("Humedad: ");
+  Serial.print(" °C | Humedad: ");
   Serial.print(hum);
-  Serial.print(" %");
-
-  Serial.print("Temp ref: ");
+  Serial.print(" % | Temp ref: ");
   Serial.println(tempReferencia);
 
-
-  
-  // Pantalla - 
+  // Pantalla
   if (pantallaActual == 1){
     pantalla.mostrarPantalla1(temp, tempReferencia, estadoVentilacion);
   }
   else{
-      pantalla.mostrarPantalla2(hum, umbralRiego, estadoRiego);
+    pantalla.mostrarPantalla2(hum, umbralInicial, estadoRiego);
   }
 
+  // --- Ventilación ---
   if (temp > tempReferencia) {
+    if (!estadoVentilacion) { // solo cuando cambia
+      Serial.println("Evento: Ventilador ENCENDIDO");
+    }
     ledVentilacion.encender();
     estadoVentilacion = true;
   } else {
+    if (estadoVentilacion) { // solo cuando cambia
+      Serial.println("Evento: Ventilador APAGADO");
+    }
     ledVentilacion.apagar();
     estadoVentilacion = false;
   }
+
+  // --- Alarma (Buzzer) ---
   if (temp > 50 or temp < -10){
     buzzer.encender();
+    Serial.println("Evento: Buzzer ACTIVADO (temperatura fuera de rango)");
   } else{
     buzzer.apagar();
   }
-  // Riego - riego.actualizar(hum);
-  if (hum < umbralRiego) {
+
+  // --- Riego ---
+  if (hum < umbralInicial) {
+    if (!estadoRiego) { // solo cuando cambia
+      Serial.println("Evento: Riego ACTIVADO (LED intermitente)");
+    }
     ledRiego.parpadear(50);
     estadoRiego = true;
   } else {
+    if (estadoRiego) { // solo cuando cambia
+      Serial.println("Evento: Riego DESACTIVADO");
+    }
     ledRiego.apagar();
     estadoRiego = false;
   }
   
   delay(100);
-
 }
 
 
