@@ -4,14 +4,14 @@
 #include <Arduino.h>
 
 class Buzzer {
+  private:
+    int pin;
+    
   public:
-    Buzzer(int pin);
+    Buzzer(int pinBuzzer);
     void init();
     void encender();
     void apagar();
-
-  private:
-    int pin;
 };
 
 #endif

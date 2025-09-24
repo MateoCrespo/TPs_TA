@@ -32,7 +32,7 @@
 #define BTN_PIN 27      // Botón 
 
 // --- Buzzer ---
-#define BUZZER_PIN 27
+#define BUZZER_PIN 32
 
 
 
@@ -58,6 +58,7 @@ void setup() {
   sensor.begin();
   boton.begin();
   pantalla.init();
+  buzzer.init();
   potenciometro.init();
   ledVentilacion.init();
   ledRiego.init();

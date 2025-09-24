@@ -10,10 +10,9 @@ void Buzzer::init() {
 }
 
 void Buzzer::encender() {
-  digitalWrite(pin, HIGH);
-  tone(pin, 1000); // Emitir tono de 1000 Hz
+  tone(pin, 1000);
 }
 
 void Buzzer::apagar() {
-  digitalWrite(pin, LOW);
+  noTone(pin);
 }
