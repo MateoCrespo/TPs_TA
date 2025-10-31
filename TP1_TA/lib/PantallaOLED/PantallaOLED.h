@@ -12,10 +12,15 @@ class PantallaOLED {
 
     void init();                                // Inicializar pantalla
     void mostrarDatosTempHum(float temp, float hum); // Mostrar datos
-    void showDisplay(const char* text);          // Mostrar texto
+    void showDisplay(const char* text);          // Mostrar texto genérico
     void mostrarPantalla1(float temp, float tempReferencia, boolean estadoVentilacion);
     void mostrarPantalla2(float hum, float humReferencia, boolean estadoRiego);
-
+    
+    // Métodos nuevos para comandos de Telegram /display
+    void mostrarEstadoLeds(bool ledVerde, bool ledAzul);  // Mostrar estado de LEDs
+    void mostrarDatosSensor(float temp, float hum);        // Mostrar DHT22
+    void mostrarVoltaje(float voltaje);                    // Mostrar potenciómetro
+    void mostrarMensajePersonalizado(String mensaje);      // Mostrar mensaje custom
 
   private:
     int width, height, resetPin;                // Parámetros de pantalla

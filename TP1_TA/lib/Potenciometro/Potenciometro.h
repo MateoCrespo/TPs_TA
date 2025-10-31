@@ -10,6 +10,9 @@ class Potenciometro {
     void init();
     float leerTemperaturaReferencia();
 
+    // Leer voltaje directo (0-3.3V) para el comando /potc
+    float leerVoltaje();
+
   private:
     int pin;
     float minTemp;
