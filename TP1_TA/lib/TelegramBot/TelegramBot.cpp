@@ -25,8 +25,8 @@ TelegramBot::~TelegramBot() {
 bool TelegramBot::begin() {
     Serial.println("=== Iniciando Bot de Telegram ===");
     
-    // Configurar certificado para conexión segura con Telegram
-    client.setCACert(TELEGRAM_CERTIFICATE_ROOT);
+    // CAMBIO CRÍTICO: Desactivar verificación SSL para Wokwi
+    client.setInsecure();
     
     // Intentar conectar a WiFi
     Serial.print("Conectando a WiFi: ");
@@ -42,7 +42,6 @@ bool TelegramBot::begin() {
         Serial.print(".");
         intentos++;
     }
-
     
     // Verificar si se conectó
     if (WiFi.status() == WL_CONNECTED) {
@@ -59,28 +58,29 @@ bool TelegramBot::begin() {
 
 // Verifica si hay mensajes nuevos
 int TelegramBot::verificarMensajes() {
+    // Solo verificar si pasó el intervalo de tiempo
     if (millis() - tiempoAnterior < intervaloChequeo) {
         return 0;
     }
+    
+    // Actualizar tiempo
     tiempoAnterior = millis();
-
-    if (WiFi.status() != WL_CONNECTED) {
-        Serial.println("⚠️ WiFi no conectado");
-        return 0;
-    }
-
-    Serial.println("Intentando conectar a Telegram...");
+    
+    // Obtener mensajes nuevos
     int numeroMensajes = bot->getUpdates(bot->last_message_received + 1);
-
-    Serial.print("Resultado getUpdates: ");
-    Serial.println(numeroMensajes);
-
+    
     if (numeroMensajes > 0) {
-        ultimoChatId = bot->messages[0].chat_id;
+        Serial.print("Mensajes nuevos recibidos: ");
+        Serial.println(numeroMensajes);
+        
+        // Guardar el chat_id del último mensaje
+        if (numeroMensajes > 0) {
+            ultimoChatId = bot->messages[0].chat_id;
+        }
     }
+    
     return numeroMensajes;
 }
-
 
 // Envía un mensaje al último chat
 bool TelegramBot::enviarMensaje(String mensaje) {
