@@ -12,7 +12,7 @@ class PantallaOLED {
 
     void init();                                // Inicializar pantalla
     void mostrarDatosTempHum(float temp, float hum); // Mostrar datos
-    void showDisplay(const char* text);          // Mostrar texto genérico
+    void showDisplay(const char* text); // Mostrar texto genérico
     void mostrarPantalla1(float temp, float tempReferencia, boolean estadoVentilacion);
     void mostrarPantalla2(float hum, float humReferencia, boolean estadoRiego);
     

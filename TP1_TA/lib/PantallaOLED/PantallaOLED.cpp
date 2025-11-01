@@ -9,72 +9,29 @@ PantallaOLED::PantallaOLED(int w, int h, int reset): display(w, h, &Wire, reset)
 
 // Inicializar pantalla
 void PantallaOLED::init() {
-  display.begin(0x3C, true);  // Dirección I2C típica del SH1106
-  display.clearDisplay();
-  display.setTextSize(1);
-  display.setTextColor(SH110X_WHITE);
-  display.setCursor(0, 0);
-  display.println("Pantalla lista");
-  display.display();
-}
-
-void PantallaOLED::showDisplay(const char* text) {
-  display.clearDisplay();
-  display.setCursor(0, 0);
-  display.print(text);
-  display.display();
-}
-
-void PantallaOLED::mostrarPantalla1(float temp, float tempReferencia, boolean estadoVentilacion) {
-  display.clearDisplay();
-  display.setTextSize(1);
-  display.setTextColor(SH110X_WHITE);
-  display.setCursor(0, 0);
-
-  display.print("Temperatura:");
-  display.print(temp);
-  display.println(" C");
-
-  display.setCursor(0, 20);
-  display.print("Temp Referencia: ");
-  display.setCursor(0, 30);
-  display.print(tempReferencia);
-  display.println(" C");
-
-  display.setCursor(0, 40);
-  display.print("Estado Ventilacion: ");
-  display.setCursor(0, 50);
-  display.print(estadoVentilacion ? "Encendido" : "Apagado");
-
-  display.display();
-}
-
-void PantallaOLED::mostrarPantalla2(float hum, float humReferencia, boolean estadoRiego) {
-  display.clearDisplay();
-  display.setTextSize(1);
-  display.setTextColor(SH110X_WHITE);
+  // Inicializar I2C SOLO UNA VEZ
+  Wire.begin(21, 22);  // SDA=21, SCL=22
+  delay(100);
   
+  Serial.println("Iniciando display SH1106...");
+  
+  if (!display.begin(0x3C, true)) {
+    Serial.println("ERROR: No pudo inicializar pantalla!");
+    return;
+  }
+  
+  Serial.println("Pantalla OK");
+  
+  display.clearDisplay();
+  display.setTextSize(2);
+  display.setTextColor(SH110X_WHITE);
   display.setCursor(0, 0);
-  display.print("Humedad: ");
-  display.print(hum);
-  display.println("%");
-
-  display.setCursor(0, 20);
-  display.print("Humedad Refe: ");
-  display.setCursor(0, 30);
-  display.print(humReferencia);
-  display.println("%");
-
-  display.setCursor(0, 40);
-  display.print("Estado Riego: ");
-  display.setCursor(0, 50);
-  display.print(estadoRiego ? "Encendido" : "Apagado");
-
+  display.println("Pantalla\nlista");
   display.display();
+  delay(500);
 }
 
 // ===== MÉTODOS NUEVOS PARA TELEGRAM =====
-
 // Mostrar estado de los LEDs en pantalla
 void PantallaOLED::mostrarEstadoLeds(bool ledVerde, bool ledAzul) {
   display.clearDisplay();
@@ -134,31 +91,17 @@ void PantallaOLED::mostrarVoltaje(float voltaje) {
   display.display();
 }
 
-// Mostrar mensaje personalizado (para /displayMensaje)
-void PantallaOLED::mostrarMensajePersonalizado(String mensaje) {
+void PantallaOLED::showDisplay(const char* text) {
+  Serial.print("Mostrando: ");
+  Serial.println(text);
+  
   display.clearDisplay();
-  display.setTextSize(1);
+  display.setTextSize(2);
   display.setTextColor(SH110X_WHITE);
   display.setCursor(0, 0);
-  
-  // Dividir mensaje en líneas si es muy largo
-  int startIndex = 0;
-  int lineHeight = 10;
-  int currentLine = 0;
-  int maxLines = 6; // Aproximadamente 6 líneas en una pantalla de 64px
-  
-  while (startIndex < mensaje.length() && currentLine < maxLines) {
-    int endIndex = startIndex + 21; // Aprox 21 caracteres por línea
-    if (endIndex > mensaje.length()) {
-      endIndex = mensaje.length();
-    }
-    
-    String linea = mensaje.substring(startIndex, endIndex);
-    display.println(linea);
-    
-    startIndex = endIndex;
-    currentLine++;
-  }
-  
+  display.print(text);
   display.display();
 }
+
+
+

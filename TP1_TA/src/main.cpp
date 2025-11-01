@@ -6,11 +6,16 @@
 #include "Boton.h"
 #include "Potenciometro.h"
 #include "Led.h"
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SH110X.h>
+
 
 // ===== CONFIGURACIÓN DE PINES =====
 // Sensor DHT22
 #define PIN_DHT 12
 #define DHT_TYPE DHT22
+
 // Pantalla OLED (I2C)
 #define OLED_WIDTH 128
 #define OLED_HEIGHT 64
@@ -24,8 +29,6 @@
 #define LED_AZUL 2    // LED azul (GPIO 2)
 // Botón
 #define BTN_PIN 27
-
-
 
 // ===== CONFIGURACIÓN WIFI Y TELEGRAM =====
 const char* WIFI_SSID = "Wokwi-GUEST";
@@ -47,7 +50,6 @@ Led ledAzul(LED_AZUL);
 
 
 // ===== VARIABLES GLOBALES =====
-int pantallaActual = 2;
 bool estadoVentilacion = false;
 int umbralInicial = 0;
 
@@ -63,7 +65,7 @@ String floatToString(float valor, int decimales) {
   return String(buffer);
 }
 
- //Envía datos a ThingSpeak
+// Envía datos a ThingSpeak
 bool enviarAThingSpeak(float valor) {
   if (WiFi.status() != WL_CONNECTED) {
     Serial.println("Error: WiFi desconectado");
@@ -86,8 +88,7 @@ bool enviarAThingSpeak(float valor) {
   }
 }
 
-
- //Procesa los comandos recibidos de Telegram
+// Procesa los comandos recibidos de Telegram
 void procesarComandosTelegram(int numMensajes) {
   for (int i = 0; i < numMensajes; i++) {
     String chatId = bot.obtenerChatId(i);
@@ -167,20 +168,36 @@ void procesarComandosTelegram(int numMensajes) {
     
     // ===== COMANDOS /display =====
     else if (texto == "/displayled") {
+      Serial.println("Ejecutando /displayled");
+      // Mostrar estado de ambos LEDs
       pantalla.mostrarEstadoLeds(estadoLedVerde, estadoLedAzul);
+      
       bot.enviarMensaje(chatId, "Estado de LEDs mostrado en pantalla OLED");
       Serial.println("Estado de LEDs mostrado en display");
     }
     else if (texto == "/displaydht22") {
+      Serial.println("Ejecutando /displaydht22");
       float temp = sensor.getTemp();
       float hum = sensor.getHum();
+      
+      Serial.print("Temp: "); Serial.print(temp);
+      Serial.print(" Hum: "); Serial.println(hum);
+      
+      // Usar el método específico para sensor
       pantalla.mostrarDatosSensor(temp, hum);
+      
       bot.enviarMensaje(chatId, "Datos del sensor mostrados en pantalla OLED");
       Serial.println("Datos DHT22 mostrados en display");
     }
     else if (texto == "/displaypote") {
+      Serial.println("Ejecutando /displaypote");
       float voltaje = potenciometro.leerVoltaje();
+      
+      Serial.print("Voltaje: "); Serial.println(voltaje);
+      
+      // Usar el método específico para voltaje
       pantalla.mostrarVoltaje(voltaje);
+      
       bot.enviarMensaje(chatId, "Voltaje del potenciómetro mostrado en pantalla OLED");
       Serial.println("Voltaje mostrado en display");
     }
@@ -198,6 +215,13 @@ void procesarComandosTelegram(int numMensajes) {
       }
     }
     
+    // ===== COMANDO /display NO RECONOCIDO =====
+    else if (texto.startsWith("/display")) {
+      pantalla.showDisplay("Comando no\nreconocido");
+      bot.enviarMensaje(chatId, "Comando display no reconocido");
+      Serial.println("Comando display no reconocido: " + texto);
+    }
+    
     // ===== COMANDO NO RECONOCIDO =====
     else {
       bot.enviarMensaje(chatId, "Comando no reconocido. Usa /start para ver los comandos disponibles.");
@@ -208,48 +232,60 @@ void procesarComandosTelegram(int numMensajes) {
 // ===== SETUP =====
 void setup() {
   Serial.begin(115200);
+  delay(1000);
+  Serial.println("\n=== INICIANDO SISTEMA ===");
+
+  // Inicializar I2C explícitamente
+  Wire.begin(OLED_SDA, OLED_SCL);
   delay(100);
   
-  Serial.println("\n=== INICIANDO SISTEMA ===");
+  Serial.println("Inicializando pantalla OLED...");
+  pantalla.init();
+  delay(500);
+  
+  Serial.println("Probando escritura en pantalla...");
+  pantalla.showDisplay("Iniciando...");
+  delay(2000);
   
   // Inicializar componentes
   sensor.begin();
   boton.begin();
-  pantalla.init();
   potenciometro.init();
   ledVerde.init();
   ledAzul.init();
-  
   Serial.println("✓ Componentes inicializados");
+  
   // Inicializar Bot de Telegram (conecta WiFi)
+  pantalla.showDisplay("Conectando\nWiFi...");
+  delay(500);
+  
   if (bot.begin()) {
     Serial.println("✓ Bot de Telegram listo");
-    pantalla.showDisplay("Bot Telegram OK");
+    pantalla.showDisplay("Bot OK!\nListo");
+    delay(2000);
+    
+    // Mensaje final
+    pantalla.showDisplay("Esperando\ncomandos...");
+    delay(3000);
+    pantalla.showDisplay("..."); 
   } else {
     Serial.println("✗ Error al iniciar bot");
     pantalla.showDisplay("Error Bot!");
+    while(1) { delay(1000); } // Detener si falla el bot
   }
   
+  Serial.println("=== SISTEMA LISTO ===");
 }
 
 // ===== LOOP =====
 void loop() {
-  // Leer sensores
-  float temp = sensor.getTemp();
-  float hum = sensor.getHum();
+  // CRÍTICO: NO actualizar la pantalla aquí
+  // Solo procesar comandos de Telegram
   
-  // Verificar mensajes de Telegram
   int numMensajes = bot.verificarMensajes();
   if (numMensajes > 0) {
     procesarComandosTelegram(numMensajes);
   }
-
-  // Cambiar pantalla con botón
-  if (boton.fuePresionado()) {
-    pantallaActual = pantallaActual == 1 ? 2 : 1;
-    Serial.print("Cambio de pantalla -> ");
-    Serial.println(pantallaActual);
-  }
-
+  
   delay(200);
 }
