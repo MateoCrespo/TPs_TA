@@ -36,7 +36,7 @@ const char* WIFI_PASS = "";
 const char* BOT_TOKEN = "8288437846:AAHlPQUkgKfZKgzFh-uPugug_yZIxPcCa5I";
 
 // ===== CONFIGURACIÓN THINGSPEAK =====
-const String THINGSPEAK_API_KEY = "RC14NH06A8LODP01";
+const String THINGSPEAK_API_KEY = "L0MKW3JEMF0H0RKJ";
 const String THINGSPEAK_URL = "https://api.thingspeak.com/update";
 
 // ===== DECLARACIÓN DE OBJETOS =====
