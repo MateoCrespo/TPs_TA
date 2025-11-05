@@ -64,29 +64,35 @@ String floatToString(float valor, int decimales) {
   snprintf(buffer, sizeof(buffer), "%.*f", decimales, valor);
   return String(buffer);
 }
-
 // Envía datos a ThingSpeak
-bool enviarAThingSpeak(float valor) {
+bool enviarAThingSpeak(float temperatura, float humedad) {
   if (WiFi.status() != WL_CONNECTED) {
     Serial.println("Error: WiFi desconectado");
     return false;
   }
 
   HTTPClient http;
-  String url = THINGSPEAK_URL + "?api_key=" + THINGSPEAK_API_KEY + "&field1=" + String(valor);
+  // Enviar ambos campos: field1=temperatura, field2=humedad
+  String url = THINGSPEAK_URL + "?api_key=" + THINGSPEAK_API_KEY 
+               + "&field1=" + String(temperatura, 1)  // 1 decimal
+               + "&field2=" + String(humedad, 1);      // 1 decimal
   
   http.begin(url);
   int httpCode = http.GET();
   http.end();
 
   if (httpCode == 200) {
-    Serial.println("✓ Datos enviados a ThingSpeak: " + String(valor));
+    Serial.println("✓ Datos enviados a ThingSpeak:");
+    Serial.println("  Temperatura: " + String(temperatura, 1) + " °C");
+    Serial.println("  Humedad: " + String(humedad, 1) + " %");
     return true;
   } else {
     Serial.println("✗ Error al enviar a ThingSpeak. Código: " + String(httpCode));
     return false;
   }
 }
+
+
 
 // Procesa los comandos recibidos de Telegram
 void procesarComandosTelegram(int numMensajes) {
@@ -205,21 +211,16 @@ void procesarComandosTelegram(int numMensajes) {
     // ===== COMANDO /platiot =====
     else if (texto == "/platiot") {
       float temp = sensor.getTemp();
+      float hum = sensor.getHum();
       
-      if (enviarAThingSpeak(temp)) {
+      if (enviarAThingSpeak(temp, hum)) {
         String mensaje = "*Datos enviados a ThingSpeak*\n";
-        mensaje += "Temperatura: " + floatToString(temp, 1) + " °C";
+        mensaje += "Temperatura: " + floatToString(temp, 1) + " °C\n";
+        mensaje += "Humedad: " + floatToString(hum, 1) + " %";
         bot.enviarMensaje(chatId, mensaje);
       } else {
         bot.enviarMensaje(chatId, "Error al enviar datos a ThingSpeak");
       }
-    }
-    
-    // ===== COMANDO /display NO RECONOCIDO =====
-    else if (texto.startsWith("/display")) {
-      pantalla.showDisplay("Comando no\nreconocido");
-      bot.enviarMensaje(chatId, "Comando display no reconocido");
-      Serial.println("Comando display no reconocido: " + texto);
     }
     
     // ===== COMANDO NO RECONOCIDO =====
